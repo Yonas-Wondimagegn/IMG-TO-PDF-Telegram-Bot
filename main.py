@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 # Dictionary to keep track of images sent by each user
 user_images = {}
 
-# Function to start the bot with a "New" button
+# Function to "New" button
 async def start(update: Update, context: CallbackContext):
     user_info = update.message.from_user
     first_name = user_info.first_name
@@ -66,12 +66,11 @@ async def done(update: Update, context: CallbackContext):
         return
 
     try:
-        # Create a PDF from all images
+        # Create a PDF from all pics
         images = [Image.open(img_path) for img_path in user_images[user_id]]
         pdf_path = f'{user_id}_output.pdf'
         images[0].save(pdf_path, save_all=True, append_images=images[1:], resolution=100.0)
 
-        # Send the PDF to the user
         with open(pdf_path, 'rb') as pdf_file:
             await context.bot.send_document(
                 chat_id=user_id,
@@ -79,7 +78,6 @@ async def done(update: Update, context: CallbackContext):
                 filename='converted.pdf'
             )
 
-        # Clean up
         for img_path in user_images[user_id]:
             os.remove(img_path)
         os.remove(pdf_path)
